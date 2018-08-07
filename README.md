@@ -1,5 +1,5 @@
 # MMFml
-MMFml - A tool for injecting and executing shell into the Windows system memory map.
+MMFml - A tool for injecting shell code into and executing from the Windows system memory map.
 
 # History
 ******************************************************************************************************************************
