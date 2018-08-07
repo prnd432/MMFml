@@ -1,4 +1,5 @@
-function Get-DelegateType # Canabalised from @harmj0y.  THANKS!
+#Function from Matt Graeber (@mattifestation) 
+function Get-DelegateType
 {
     Param
     (
