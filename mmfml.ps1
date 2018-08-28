@@ -31,10 +31,6 @@ Overrides the shellcode included in the script with custom shellcode - 0x90 (NOP
 Warning: This script has no way to validate that your shellcode is 32 vs. 64-bit!
 #>
 [CmdletBinding( DefaultParameterSetName = 'RunLocal', SupportsShouldProcess = $True , ConfirmImpact = 'High')] Param (
-    [ValidateNotNullOrEmpty()]
-    [UInt16]
-    $ProcessID,
-    
     [Parameter( ParameterSetName = 'RunLocal' )]
     [ValidateNotNullOrEmpty()]
     [Byte[]]
