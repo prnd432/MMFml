@@ -5,7 +5,7 @@ Inject shellcode into a Fileless Memory Mapped File, and pass execution from the
 PowerSploit Function: Invoke-MMFml
 Authors: Parker Crook (@crooksecurity), Ben Holder (@soapaid)
 License: BSD 3-Clause
-Required Dependencies: None
+Required Dependencies: Powershell 5+; 64-bit shellcode; 64-bit architecture
 Optional Dependencies: None
  
 .DESCRIPTION
@@ -28,7 +28,6 @@ C:\PS> Invoke-Shellcode -Shellcode @(0x90,0x90,0xC3)
 Description
 -----------
 Overrides the shellcode included in the script with custom shellcode - 0x90 (NOP), 0x90 (NOP), 0xC3 (RET)
-Warning: This script has no way to validate that your shellcode is 32 vs. 64-bit!
 #>
 [CmdletBinding( DefaultParameterSetName = 'RunLocal', SupportsShouldProcess = $True , ConfirmImpact = 'High')] Param (
     [Parameter( ParameterSetName = 'RunLocal' )]
